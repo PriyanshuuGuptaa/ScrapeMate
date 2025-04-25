@@ -28,7 +28,6 @@ def fetching_html(url):
     try:
         response = requests.get(url)
         response.raise_for_status()
-        print(response.text)
         return response.text
     except requests.exceptions.RequestException as e:
         print("Error fetching HTML")
@@ -42,8 +41,15 @@ def fetching_html(url):
 def extract_tags(html):
     soup = BeautifulSoup(html,"html.parser")
     all_tags = soup.find_all(True)
-    unique_tags = sorted(set(tag.name for tag in all_tags))
-    return unique_tags
+    tag_info= []
+    for tag in all_tags:
+        tag_name = tag.name
+        tag_class = " ".join(tag.get("class",[]))
+        tag_text = tag.get_text(strip=True)[:100]
+
+        tag_info.append((tag_name,tag_class,tag_text))
+
+    return tag_info
     
 # extract_tags(html)
 
